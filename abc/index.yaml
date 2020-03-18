@@ -1,0 +1,28 @@
+apiVersion: v1
+entries:
+  mysql:
+  - apiVersion: v1
+    appVersion: 5.7.28
+    created: "2020-03-06T01:37:59.872551522+05:30"
+    description: Fast, reliable, scalable, and easy to use open-source relational
+      database system.
+    digest: e97b5d91308cc5602450a21864aa20a5d2f0f0ff81ba62cb5de6f6632486fedc
+    home: https://www.mysql.com/
+    icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+    keywords:
+    - mysql
+    - database
+    - sql
+    maintainers:
+    - email: o.with@sportradar.com
+      name: olemarkus
+    - email: viglesias@google.com
+      name: viglesiasce
+    name: mysql
+    sources:
+    - https://github.com/kubernetes/charts
+    - https://github.com/docker-library/mysql
+    urls:
+    - http://10.237.220.73/aman/fcaps-helm/-/raw/master/mysql-1.6.2.tgz?inline=false
+    version: 1.6.2
+generated: "2020-03-06T01:37:59.870510988+05:30"

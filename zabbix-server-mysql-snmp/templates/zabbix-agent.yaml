@@ -1,0 +1,51 @@
+{{- if .Values.agent.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "zabbix-server-mysql.labels" . | nindent 4 }}-agent
+  name: zabbix-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "zabbix-server-mysql.selectorLabels" . | nindent 6 }}-agent
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        {{- include "zabbix-server-mysql.selectorLabels" . | nindent 8 }}-agent
+    spec:
+      containers:
+      - name: zabbix-agent
+        image: "zabbix/zabbix-agent:{{ .Chart.AppVersion }}"
+        env:
+        - name: ZBX_SERVER_HOST
+          value: {{ include "zabbix-server-mysql.fullname" . }}
+        ports:
+        - containerPort: 10050
+          protocol: TCP
+        resources: {}
+status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zabbix-agent
+  labels:
+    {{- include "zabbix-server-mysql.labels" . | nindent 4 }}-agent
+spec:
+  selector:
+    {{- include "zabbix-server-mysql.selectorLabels" . | nindent 4 }}-agent
+  #clusterIP: None
+  ports:
+  - name: 10050-tcp
+    port: 10050
+    protocol: TCP
+    targetPort: 10050
+{{- end }}    
+
+
+

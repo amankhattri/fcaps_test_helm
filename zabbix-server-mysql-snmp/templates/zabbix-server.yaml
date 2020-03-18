@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zabbix-server-mysql.fullname" . }}
+  labels:
+    {{- include "zabbix-server-mysql.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "zabbix-server-mysql.selectorLabels" . | nindent 6 }}
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        {{- include "zabbix-server-mysql.selectorLabels" . | nindent 8 }}
+    spec:
+      volumes:
+       - hostPath:
+          path: /zabbix/
+         name: zabbix-db-storage
+       - name: snmp-config
+         configMap:
+           name: snmp-config
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.server.repository }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DB_SERVER_HOST
+          value: {{ .Release.Name }}-{{ .Values.DB_SERVER_HOST }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.MYSQL_DATABASE }}
+        - name: MYSQL_USER
+          value: {{ .Values.MYSQL_USER }}
+        - name: MYSQL_PASSWORD
+          value: {{ .Values.MYSQL_PASSWORD }}
+        - name: MYSQL_ROOT_PASSWORD
+          value: {{ .Values.MYSQL_ROOT_PASSWORD }}
+        - name: ZBX_ENABLE_SNMP_TRAPS
+          value: "true"
+        ports:
+        - name: tcp-10051
+          containerPort: {{ .Values.service.server.port }}
+          protocol: TCP
+        volumeMounts:
+        - name: zabbix-db-storage
+          mountPath: /var/lib/zabbix/snmptraps/
+          readOnly: true
+      - name: {{ .Chart.Name }}-snmp-traps
+        image: "{{ .Values.image.snmp.repository }}:{{ .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 162
+          protocol: UDP
+          name: snmp-trap
+        volumeMounts:
+        - name: zabbix-db-storage
+          mountPath: /var/lib/zabbix/snmptraps/
+          readOnly: false 
+        - name: snmp-config
+          mountPath: /etc/snmp/snmptrapfmt.conf
+          subPath: snmptrapfmt.conf 
+        resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}  
+
+status: {}

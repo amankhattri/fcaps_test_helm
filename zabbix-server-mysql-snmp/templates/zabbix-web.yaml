@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "zabbix-server-mysql.fullname" . }}-web
+  creationTimestamp: null
+  labels:
+    {{- include "zabbix-server-mysql.labels" . | nindent 4 }}-web
+  
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+       {{- include "zabbix-server-mysql.selectorLabels" . | nindent 6 }}-web
+  strategy: {}
+  template:     
+    metadata:
+      labels:
+        {{- include "zabbix-server-mysql.selectorLabels" . | nindent 8 }}-web
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-web 
+        image: "{{ .Values.image.web.repository }}:{{ .Chart.AppVersion }}"         
+        env:
+        - name: ZBX_SERVER_HOST
+          value: {{ include "zabbix-server-mysql.fullname" . }}
+        - name: PHP_TZ
+          value: Asia/Dubai
+        - name: DB_SERVER_HOST
+          value: {{ .Release.Name }}-{{ .Values.DB_SERVER_HOST }}
+        - name: MYSQL_DATABASE
+          value: {{ .Values.MYSQL_DATABASE }}
+        - name: MYSQL_USER
+          value: {{ .Values.MYSQL_USER }}
+        - name: MYSQL_PASSWORD
+          value: {{ .Values.MYSQL_PASSWORD }}          
+        ports:
+        - name: http-port
+          containerPort: {{ .Values.service.web.http_port }}
+          protocol: TCP
+        - name: https-port
+          containerPort: {{ .Values.service.web.https_port }}
+          protocol: TCP
+        resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}  
+
+status: {}

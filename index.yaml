@@ -1,0 +1,54 @@
+apiVersion: v1
+entries:
+  mysql:
+  - apiVersion: v1
+    appVersion: 5.7.28
+    created: "2020-03-06T02:53:14.661834769+05:30"
+    description: Fast, reliable, scalable, and easy to use open-source relational
+      database system.
+    digest: e97b5d91308cc5602450a21864aa20a5d2f0f0ff81ba62cb5de6f6632486fedc
+    home: https://www.mysql.com/
+    icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+    keywords:
+    - mysql
+    - database
+    - sql
+    maintainers:
+    - email: o.with@sportradar.com
+      name: olemarkus
+    - email: viglesias@google.com
+      name: viglesiasce
+    name: mysql
+    sources:
+    - https://github.com/kubernetes/charts
+    - https://github.com/docker-library/mysql
+    urls:
+    - http://10.237.220.73/aman/fcaps-helm/-/raw/master/mysql-1.6.2.tgz?inline=false
+    version: 1.6.2
+  zabbix-server-mysql:
+  - apiVersion: v2
+    appVersion: centos-3.0.22
+    created: "2020-03-06T02:53:14.662825837+05:30"
+    description: zabbix-server-mysql kubernetes chart
+    digest: bf233ca4f2de9ef92879e46d05e2112e53e3ec1de722432696690e458b3ea0e7
+    name: zabbix-server-mysql
+    type: application
+    urls:
+    - http://10.237.220.73/aman/fcaps-helm/-/raw/master/zabbix-server-mysql-0.1.0.tgz?inline=false
+    version: 0.1.0
+  zabbix-server-mysql-1:
+  - apiVersion: v2
+    appVersion: centos-3.0.22
+    created: "2020-03-06T02:53:14.665806804+05:30"
+    dependencies:
+    - name: mysql
+      repository: http://10.237.220.73/aman/fcaps-helm/-/raw/master/
+      version: 1.6.2
+    description: zabbix-server-mysql kubernetes chart
+    digest: 244626e42cfb8ac91147eeb1c6f8f45a6a89bda3b6b6573cd6376b38ee251812
+    name: zabbix-server-mysql-1
+    type: application
+    urls:
+    - http://10.237.220.73/aman/fcaps-helm/-/raw/master/zabbix-server-mysql-1-0.2.0.tgz?inline=false
+    version: 0.2.0
+generated: "2020-03-06T02:53:14.659691779+05:30"

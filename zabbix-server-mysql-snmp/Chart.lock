@@ -1,0 +1,6 @@
+dependencies:
+- name: mysql
+  repository: http://10.237.220.73/aman/fcaps-helm/-/raw/master/
+  version: 1.6.2
+digest: sha256:a618bd37c1b21e03f076752af454f28b86e791cb6ea8cb99088a9aa1adcb6365
+generated: "2020-03-06T03:11:02.750206671+05:30"
